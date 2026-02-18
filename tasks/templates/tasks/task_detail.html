@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ task.title }} - Hangarin{% endblock %}
+
+{% block content %}
+<div style="padding: 20px; max-width: 800px;">
+    <div style="background-color: white; border-radius: 4px; padding: 30px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        
+  
+        <h1 style="color: #2c3e50; margin-bottom: 10px;">{{ task.title }}</h1>
+        
+        <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+            <span style="background-color: #ecf0f1; padding: 6px 12px; border-radius: 3px; font-size: 14px;">
+                Status: <strong>{{ task.get_status_display }}</strong>
+            </span>
+            <span style="background-color: 
+                {% if task.priority.name == 'High' %}#e74c3c{% elif task.priority.name == 'Medium' %}#f39c12{% else %}#27ae60{% endif %};
+                color: white; padding: 6px 12px; border-radius: 3px; font-size: 14px;">
+                Priority: {{ task.priority.name }}
+            </span>
+            <span style="background-color: #ecf0f1; padding: 6px 12px; border-radius: 3px; font-size: 14px;">
+                Category: {{ task.category.name }}
+            </span>
+        </div>
+        
+        <hr style="margin: 20px 0; border: none; border-top: 1px solid #ecf0f1;">
+        
+
+        <div style="margin-bottom: 20px;">
+            <h3 style="color: #2c3e50; margin-bottom: 10px;">Description</h3>
+            <p style="color: #555; line-height: 1.6;">{{ task.description }}</p>
+        </div>
+        
+        <!-- Task Details -->
+        <div style="background-color: #f8f9fa; padding: 15px; border-radius: 4px; margin-bottom: 20px;">
+            <p><strong>Created:</strong> {{ task.created_at|date:"F d, Y - H:i" }}</p>
+            <p><strong>Due Date:</strong> {% if task.due_date %}{{ task.due_date|date:"F d, Y" }}{% else %}Not set{% endif %}</p>
+            <p><strong>Progress:</strong> {{ task.progress }}%</p>
+        </div>
+        
+        {% if subtasks %}
+            <div style="margin-bottom: 20px;">
+                <h3 style="color: #2c3e50; margin-bottom: 10px;">Subtasks ({{ subtasks.count }})</h3>
+                <ul style="list-style: none; padding: 0;">
+                    {% for subtask in subtasks %}
+                        <li style="background-color: #f8f9fa; padding: 10px; margin-bottom: 8px; border-radius: 4px; border-left: 4px solid {% if subtask.completed %}#27ae60{% else %}#95a5a6{% endif %};">
+                            <input type="checkbox" {% if subtask.completed %}checked{% endif %} disabled style="margin-right: 10px;">
+                            {% if subtask.completed %}<span style="text-decoration: line-through; color: #999;">{{ subtask.title }}</span>{% else %}<span>{{ subtask.title }}</span>{% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+        
+        <!-- Notes -->
+        {% if notes %}
+            <div style="margin-bottom: 20px;">
+                <h3 style="color: #2c3e50; margin-bottom: 10px;">Notes ({{ notes.count }})</h3>
+                <div style="background-color: #fff3cd; padding: 15px; border-radius: 4px; border-left: 4px solid #ffc107;">
+                    {% for note in notes %}
+                        <div style="margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #ffeaa7;">
+                            <p style="color: #555; margin: 0;">{{ note.content }}</p>
+                            <small style="color: #999;">{{ note.created_at|date:"F d, Y - H:i" }}</small>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+        
+        <!-- Action Buttons -->
+        <div style="display: flex; gap: 10px; margin-top: 30px;">
+            <a href="/admin/tasks/task/{{ task.id }}/change/" style="padding: 10px 20px; background-color: #3498db; color: white; text-decoration: none; border-radius: 4px;">Edit Task</a>
+            <a href="{% url 'task-list' %}" style="padding: 10px 20px; background-color: #95a5a6; color: white; text-decoration: none; border-radius: 4px;">Back to Tasks</a>
+        </div>
+        
+    </div>
+</div>
+{% endblock %}

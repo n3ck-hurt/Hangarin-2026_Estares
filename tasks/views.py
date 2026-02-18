@@ -1,6 +1,9 @@
 from django.shortcuts import render
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView, DetailView, TemplateView
 from .models import Task
+
+class HomeView(TemplateView):
+    template_name = 'index.html'
 
 class TaskListView(ListView):
     model = Task
