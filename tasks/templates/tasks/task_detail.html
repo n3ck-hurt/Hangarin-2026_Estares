@@ -1,78 +1,130 @@
 {% extends 'base.html' %}
 
-{% block title %}{{ task.title }} - Hangarin{% endblock %}
+{% block title %}{{ weapon.name }} - Arsenal Specs{% endblock %}
 
 {% block content %}
-<div style="padding: 20px; max-width: 800px;">
-    <div style="background-color: white; border-radius: 4px; padding: 30px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-        
-  
-        <h1 style="color: #2c3e50; margin-bottom: 10px;">{{ task.title }}</h1>
-        
-        <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-            <span style="background-color: #ecf0f1; padding: 6px 12px; border-radius: 3px; font-size: 14px;">
-                Status: <strong>{{ task.get_status_display }}</strong>
-            </span>
-            <span style="background-color: 
-                {% if task.priority.name == 'High' %}#e74c3c{% elif task.priority.name == 'Medium' %}#f39c12{% else %}#27ae60{% endif %};
-                color: white; padding: 6px 12px; border-radius: 3px; font-size: 14px;">
-                Priority: {{ task.priority.name }}
-            </span>
-            <span style="background-color: #ecf0f1; padding: 6px 12px; border-radius: 3px; font-size: 14px;">
-                Category: {{ task.category.name }}
-            </span>
-        </div>
-        
-        <hr style="margin: 20px 0; border: none; border-top: 1px solid #ecf0f1;">
-        
+<div class="dashboard-header">
+    <div class="dashboard-title">
+        <a href="{% url 'task-list' %}" class="text-red text-decoration-none small fw-bold mb-2 d-inline-block">
+            <i class="mdi mdi-arrow-left me-1"></i> BACK TO CATALOG
+        </a>
+        <h1>{{ weapon.name }}</h1>
+        <div class="dashboard-subtitle">Technical specifications and deployment history</div>
+    </div>
+    <div class="d-flex gap-2">
+        <a href="/admin/tasks/weapon/{{ weapon.id }}/change/" class="btn btn-red shadow-sm">
+            <i class="mdi mdi-pencil me-1"></i> Modify Hardware
+        </a>
+        <button class="btn btn-light border shadow-sm">
+            <i class="mdi mdi-share-variant me-1"></i> Export Specs
+        </button>
+    </div>
+</div>
 
-        <div style="margin-bottom: 20px;">
-            <h3 style="color: #2c3e50; margin-bottom: 10px;">Description</h3>
-            <p style="color: #555; line-height: 1.6;">{{ task.description }}</p>
-        </div>
-        
-        <!-- Task Details -->
-        <div style="background-color: #f8f9fa; padding: 15px; border-radius: 4px; margin-bottom: 20px;">
-            <p><strong>Created:</strong> {{ task.created_at|date:"F d, Y - H:i" }}</p>
-            <p><strong>Due Date:</strong> {% if task.due_date %}{{ task.due_date|date:"F d, Y" }}{% else %}Not set{% endif %}</p>
-            <p><strong>Progress:</strong> {{ task.progress }}%</p>
-        </div>
-        
-        {% if subtasks %}
-            <div style="margin-bottom: 20px;">
-                <h3 style="color: #2c3e50; margin-bottom: 10px;">Subtasks ({{ subtasks.count }})</h3>
-                <ul style="list-style: none; padding: 0;">
-                    {% for subtask in subtasks %}
-                        <li style="background-color: #f8f9fa; padding: 10px; margin-bottom: 8px; border-radius: 4px; border-left: 4px solid {% if subtask.completed %}#27ae60{% else %}#95a5a6{% endif %};">
-                            <input type="checkbox" {% if subtask.completed %}checked{% endif %} disabled style="margin-right: 10px;">
-                            {% if subtask.completed %}<span style="text-decoration: line-through; color: #999;">{{ subtask.title }}</span>{% else %}<span>{{ subtask.title }}</span>{% endif %}
-                        </li>
-                    {% endfor %}
-                </ul>
-            </div>
-        {% endif %}
-        
-        <!-- Notes -->
-        {% if notes %}
-            <div style="margin-bottom: 20px;">
-                <h3 style="color: #2c3e50; margin-bottom: 10px;">Notes ({{ notes.count }})</h3>
-                <div style="background-color: #fff3cd; padding: 15px; border-radius: 4px; border-left: 4px solid #ffc107;">
-                    {% for note in notes %}
-                        <div style="margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #ffeaa7;">
-                            <p style="color: #555; margin: 0;">{{ note.content }}</p>
-                            <small style="color: #999;">{{ note.created_at|date:"F d, Y - H:i" }}</small>
+<div class="row g-4">
+    <!-- Main Weapon Info -->
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-body p-4">
+                <div class="d-flex flex-wrap gap-2 mb-4">
+                    <span class="badge bg-black text-red border px-3 py-2 rounded-pill fw-bold">
+                        <i class="mdi mdi-identifier me-1"></i> {{ weapon.model_number }}
+                    </span>
+                    <span class="badge bg-light text-dark border px-3 py-2 rounded-pill fw-bold">
+                        <i class="mdi mdi-tag-outline me-1"></i> {{ weapon.category.name }}
+                    </span>
+                    <span class="badge {% if weapon.is_active %}bg-success{% else %}bg-danger{% endif %} px-3 py-2 rounded-pill fw-bold text-white">
+                        <i class="mdi mdi-power me-1"></i> {% if weapon.is_active %}Operational{% else %}Decommissioned{% endif %}
+                    </span>
+                </div>
+
+                <h5 class="fw-bold mb-3">System Description</h5>
+                <p class="text-muted mb-4" style="line-height: 1.8;">{{ weapon.description|default:"No technical description provided. Classified hardware." }}</p>
+
+                <div class="row g-4 mb-4">
+                    <div class="col-md-6">
+                        <div class="p-3 bg-light rounded">
+                            <small class="text-muted d-block text-uppercase fw-bold mb-1">Caliber / Type</small>
+                            <span class="fw-bold">{{ weapon.caliber|default:"N/A" }}</span>
                         </div>
-                    {% endfor %}
+                    </div>
+                    <div class="col-md-6">
+                        <div class="p-3 bg-light rounded">
+                            <small class="text-muted d-block text-uppercase fw-bold mb-1">Unit Price</small>
+                            <span class="fw-bold text-red">${{ weapon.unit_price|floatformat:2 }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                {% if recent_deals %}
+                    <h5 class="fw-bold mb-3 mt-5">Recent Deployment ({{ recent_deals.count }})</h5>
+                    <div class="list-group list-group-flush">
+                        {% for deal in recent_deals %}
+                            <div class="list-group-item border-0 px-0 py-3 d-flex align-items-center">
+                                <div class="me-3">
+                                    <i class="mdi mdi-truck-delivery text-red fs-4"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <div class="fw-bold">{{ deal.client.name }}</div>
+                                    <small class="text-muted">{{ deal.deal_date|date:"M d, Y" }} - x{{ deal.quantity }} units</small>
+                                </div>
+                                <div>
+                                    <span class="badge {% if deal.status == 'Completed' %}bg-success{% else %}bg-warning text-dark{% endif %} rounded-pill">
+                                        {{ deal.status }}
+                                    </span>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar Info -->
+    <div class="col-lg-4">
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-body p-4">
+                <h5 class="fw-bold mb-4">Logistics & Inventory</h5>
+                
+                <div class="mb-4">
+                    <label class="text-muted small fw-bold text-uppercase d-block mb-2">Stock Availability</label>
+                    <div class="d-flex align-items-center">
+                        <div class="progress flex-grow-1 me-3" style="height: 8px;">
+                            <div class="progress-bar bg-red-primary" role="progressbar" style="width: {{ weapon.stock_quantity }}%" aria-valuenow="{{ weapon.stock_quantity }}" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <span class="fw-bold text-red">{{ weapon.stock_quantity }}</span>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label class="text-muted small fw-bold text-uppercase d-block mb-1">Supplier</label>
+                    <div class="fw-medium">{{ weapon.supplier.name }}</div>
+                    <div class="text-muted small">{{ weapon.supplier.country }}</div>
+                </div>
+
+                <div class="mb-4">
+                    <label class="text-muted small fw-bold text-uppercase d-block mb-1">Last Update</label>
+                    <div class="fw-medium">{{ weapon.updated_at|date:"F d, Y" }}</div>
+                </div>
+
+                <hr class="my-4 text-muted opacity-25">
+
+                <div class="d-grid">
+                    <button class="btn btn-outline-danger btn-sm">
+                        <i class="mdi mdi-delete-outline me-1"></i> Purge Record
+                    </button>
                 </div>
             </div>
-        {% endif %}
-        
-        <!-- Action Buttons -->
-        <div style="display: flex; gap: 10px; margin-top: 30px;">
-            <a href="/admin/tasks/task/{{ task.id }}/change/" style="padding: 10px 20px; background-color: #3498db; color: white; text-decoration: none; border-radius: 4px;">Edit Task</a>
-            <a href="{% url 'task-list' %}" style="padding: 10px 20px; background-color: #95a5a6; color: white; text-decoration: none; border-radius: 4px;">Back to Tasks</a>
         </div>
-        
+
+        <div class="card border-0 shadow-sm bg-black text-white">
+            <div class="card-body p-4 text-center">
+                <i class="mdi mdi-alert-decagram-outline fs-1 mb-3 text-red"></i>
+                <h6 class="fw-bold mb-2">Security Notice</h6>
+                <p class="small mb-0 opacity-75">Export of this hardware is subject to international trade laws and Ares Armory clearance protocols.</p>
+            </div>
+        </div>
     </div>
 </div>
 {% endblock %}

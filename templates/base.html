@@ -3,75 +3,277 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Hangarin - Task Manager{% endblock %}</title>
+    <title>{% block title %}ARSENAL Armory - Global Defense Solutions{% endblock %}</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Material Design Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@7.2.96/css/materialdesignicons.min.css" rel="stylesheet">
+    <!-- Google Fonts - Roboto -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        :root {
+            --primary-red: #d32f2f;
+            --dark-red: #b71c1c;
+            --light-red: #ef5350;
+            --accent-red: #ff5252;
+            --dark-bg: #000000;
+            --light-bg: #f5f5f5;
+            --sidebar-width: 240px;
         }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f5f5f5;
-            color: #333;
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--light-bg);
+            color: #212121;
+            overflow-x: hidden;
         }
-        header {
-            background-color: #2c3e50;
-            color: white;
-            padding: 20px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+
+        /* Top Navbar */
+        .navbar-top {
+            background-color: var(--dark-bg);
+            height: 64px;
+            padding: 0 1.5rem;
+            z-index: 1030;
+            border-bottom: 1px solid rgba(211, 47, 47, 0.3);
         }
-        header h1 {
-            font-size: 28px;
+        .navbar-brand {
+            color: white !important;
+            font-weight: 500;
+            font-size: 1.25rem;
+            letter-spacing: 1px;
         }
-        nav {
-            background-color: #34495e;
-            padding: 10px 20px;
+        .navbar-brand i {
+            color: var(--primary-red);
         }
-        nav a {
-            color: white;
+        .nav-link-top {
+            color: rgba(255,255,255,0.7) !important;
+            font-size: 0.9rem;
+            margin-left: 1.5rem;
+        }
+        .nav-link-top:hover {
+            color: var(--primary-red) !important;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: var(--sidebar-width);
+            height: calc(100vh - 64px);
+            background-color: white;
+            position: fixed;
+            top: 64px;
+            left: 0;
+            box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,0.075);
+            z-index: 1020;
+            overflow-y: auto;
+            padding-top: 1rem;
+            border-right: 1px solid #eee;
+        }
+        .sidebar-section-title {
+            padding: 0.75rem 1.5rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #9e9e9e;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1.5rem;
+            color: #616161;
             text-decoration: none;
-            margin-right: 20px;
-            transition: color 0.3s;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s;
         }
-        nav a:hover {
-            color: #3498db;
+        .sidebar-link i {
+            margin-right: 1rem;
+            font-size: 1.25rem;
+            color: #9e9e9e;
         }
-        main {
-            max-width: 1200px;
-            margin: 20px auto;
-            padding: 0 20px;
+        .sidebar-link:hover {
+            background-color: #fce4e4;
+            color: var(--primary-red);
         }
-        footer {
-            background-color: #2c3e50;
+        .sidebar-link.active {
+            color: var(--primary-red);
+            background-color: #fdeaea;
+        }
+        .sidebar-link.active i {
+            color: var(--primary-red);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding: 2rem;
+            min-height: calc(100vh - 64px);
+        }
+
+        /* Dashboard Header */
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 2rem;
+        }
+        .dashboard-title h1 {
+            font-size: 1.75rem;
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+            color: #212121;
+        }
+        .dashboard-subtitle {
+            color: #757575;
+            font-size: 0.9rem;
+        }
+
+        /* Custom Cards */
+        .stat-card {
+            border: none;
+            border-radius: 4px;
+            box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,0.075);
+            padding: 1.5rem;
+            position: relative;
+            height: 100%;
+            transition: transform 0.2s;
+        }
+        .stat-card:hover {
+            transform: translateY(-2px);
+        }
+        .stat-card-accent {
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            border-radius: 4px 0 0 4px;
+        }
+        .stat-card-title {
+            color: #757575;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+        }
+        .stat-card-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: #212121;
+        }
+        .stat-card-change {
+            font-size: 0.8rem;
+            color: #9e9e9e;
+        }
+        .stat-card-icon {
+            position: absolute;
+            right: 1.5rem;
+            top: 1.5rem;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             color: white;
-            text-align: center;
-            padding: 20px;
-            margin-top: 40px;
+        }
+
+        /* Color Overrides */
+        .bg-red-primary { background-color: var(--primary-red); }
+        .bg-red-dark { background-color: var(--dark-red); }
+        .bg-red-light { background-color: var(--light-red); }
+        .bg-red-accent { background-color: var(--accent-red); }
+        .bg-black { background-color: var(--dark-bg); }
+
+        .text-red { color: var(--primary-red); }
+        .btn-red {
+            background-color: var(--primary-red);
+            color: white;
+            border: none;
+        }
+        .btn-red:hover {
+            background-color: var(--dark-red);
+            color: white;
         }
     </style>
     {% block extra_css %}{% endblock %}
 </head>
 <body>
-    <header>
-        <h1>Hangarin</h1>
-        <p>Task Management System</p>
-    </header>
-    
-    <nav>
-        <a href="/">Home</a>
-        <a href="/tasks/">Tasks</a>
-        <a href="/admin/">Admin</a>
+    <!-- Top Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-top">
+        <div class="container-fluid p-0">
+            <a class="navbar-brand" href="/">
+                <i class="mdi mdi-pistol me-3"></i>
+                ARSENAL ARMORY PRO
+            </a>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-top" href="#">Intelligence</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-top" href="#">Logistics</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-top" href="#"><i class="mdi mdi-shield-outline fs-5"></i></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-top" href="#"><i class="mdi mdi-security fs-5"></i></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-top" href="#"><i class="mdi mdi-account-tie fs-4"></i></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
     </nav>
-    
-    <main>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-section-title">Operational Overview</div>
+        <a href="/" class="sidebar-link {% if request.path == '/' %}active{% endif %}">
+            <i class="mdi mdi-radar"></i>
+            Control Center
+        </a>
+        
+        <div class="sidebar-section-title">Arsenal Management</div>
+        <a href="/tasks/" class="sidebar-link {% if request.path == '/tasks/' %}active{% endif %}">
+            <i class="mdi mdi-bulletin-board"></i>
+            Weapon Catalog
+        </a>
+        <a href="{% url 'supplier-list' %}" class="sidebar-link {% if '/tasks/suppliers/' in request.path %}active{% endif %}">
+            <i class="mdi mdi-factory"></i>
+            Suppliers
+        </a>
+        
+        <div class="sidebar-section-title">Trade & Relations</div>
+        <a href="/tasks/transactions/" class="sidebar-link {% if '/tasks/transactions/' in request.path %}active{% endif %}">
+            <i class="mdi mdi-handshake"></i>
+            Black Market Deals
+        </a>
+        <a href="{% url 'client-list' %}" class="sidebar-link {% if '/tasks/clients/' in request.path %}active{% endif %}">
+            <i class="mdi mdi-account-group-outline"></i>
+            Clients
+        </a>
+        
+        <div class="sidebar-section-title">Security</div>
+        <a href="/admin/" class="sidebar-link">
+            <i class="mdi mdi-lock-outline"></i>
+            Mainframe Access
+        </a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
         {% block content %}{% endblock %}
-    </main>
-    
-    <footer>
-        <p>&copy; 2026 Hangarin. All rights reserved.</p>
-    </footer>
-    
+    </div>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     {% block extra_js %}{% endblock %}
 </body>
 </html>

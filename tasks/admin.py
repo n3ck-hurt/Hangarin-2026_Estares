@@ -1,42 +1,41 @@
 from django.contrib import admin
-from .models import Category, Priority, Task, SubTask, Note
+from .models import ArmoryCategory, Supplier, Weapon, Client, Transaction, IntelligenceNote
 
-@admin.register(Category)
-class CategoryAdmin(admin.ModelAdmin):
+@admin.register(ArmoryCategory)
+class ArmoryCategoryAdmin(admin.ModelAdmin):
     list_display = ['name', 'created_at']
     search_fields = ['name']
-    list_per_page = 20
 
-@admin.register(Priority)
-class PriorityAdmin(admin.ModelAdmin):
-    list_display = ['name', 'level', 'color', 'created_at']
-    list_editable = ['level', 'color']
-    ordering = ['-level']
+@admin.register(Supplier)
+class SupplierAdmin(admin.ModelAdmin):
+    list_display = ['name', 'country', 'reliability_score']
+    search_fields = ['name', 'country']
 
-@admin.register(Task)
-class TaskAdmin(admin.ModelAdmin):
-    list_display = ['title', 'status', 'priority', 'category', 'due_date', 'created_at']
-    list_filter = ['status', 'priority', 'category', 'created_at']
-    search_fields = ['title', 'description']
-    list_editable = ['status', 'priority']
-    list_per_page = 25
-    date_hierarchy = 'created_at'
+@admin.register(Weapon)
+class WeaponAdmin(admin.ModelAdmin):
+    list_display = ['name', 'model_number', 'category', 'unit_price', 'stock_quantity', 'is_active']
+    list_filter = ['category', 'supplier', 'is_active']
+    search_fields = ['name', 'model_number']
+    list_editable = ['unit_price', 'stock_quantity', 'is_active']
 
-@admin.register(SubTask)
-class SubTaskAdmin(admin.ModelAdmin):
-    list_display = ['title', 'status', 'task', 'order', 'created_at']
-    list_filter = ['status', 'created_at']
-    search_fields = ['title', 'description']
-    list_editable = ['status', 'order']
-    list_per_page = 30
+@admin.register(Client)
+class ClientAdmin(admin.ModelAdmin):
+    list_display = ['name', 'region', 'clearance_level', 'total_spent']
+    list_filter = ['region', 'clearance_level']
+    search_fields = ['name', 'region']
 
-@admin.register(Note)
-class NoteAdmin(admin.ModelAdmin):
-    list_display = ['content_preview', 'task', 'created_at']
-    list_filter = ['created_at']
-    search_fields = ['content']
-    list_per_page = 30
+@admin.register(Transaction)
+class TransactionAdmin(admin.ModelAdmin):
+    list_display = ['id', 'client', 'weapon', 'quantity', 'total_price', 'status', 'deal_date']
+    list_filter = ['status', 'deal_date']
+    search_fields = ['client__name', 'weapon__name']
+    list_editable = ['status']
+    date_hierarchy = 'deal_date'
+
+@admin.register(IntelligenceNote)
+class IntelligenceNoteAdmin(admin.ModelAdmin):
+    list_display = ['transaction', 'content_preview', 'created_at']
     
     def content_preview(self, obj):
         return obj.content[:50] + "..." if len(obj.content) > 50 else obj.content
-    content_preview.short_description = "Content"
+    content_preview.short_description = "Intel Preview"

@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+
+{% block title %}Client Ledger - ARSENAL Armory{% endblock %}
+
+{% block content %}
+<div class="dashboard-header">
+    <div class="dashboard-title">
+        <h1>Client Ledger</h1>
+        <div class="dashboard-subtitle">Verified buyers and regional contacts</div>
+    </div>
+    <div>
+        <a href="/admin/tasks/client/add/" class="btn btn-red shadow-sm">
+            <i class="mdi mdi-account-plus me-1"></i> Add New Client
+        </a>
+    </div>
+</div>
+
+<!-- Filters & Search -->
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-body p-4">
+        <form method="get" class="row g-3 align-items-end">
+            <div class="col-md-9">
+                <label for="q" class="form-label small fw-bold text-muted">SEARCH CLIENTS</label>
+                <div class="input-group bg-light rounded">
+                    <span class="input-group-text border-0 bg-transparent text-muted">
+                        <i class="mdi mdi-account-search"></i>
+                    </span>
+                    <input type="text" name="q" id="q" class="form-control border-0 bg-transparent" placeholder="Search by name or region..." value="{{ request.GET.q }}">
+                </div>
+            </div>
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-red w-100 shadow-sm">
+                    <i class="mdi mdi-magnify me-1"></i> Search
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% if clients %}
+    <div class="card border-0 shadow-sm">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="bg-black text-white">
+                    <tr>
+                        <th class="px-4 py-3 text-muted small fw-bold text-uppercase border-0">Client Name</th>
+                        <th class="py-3 text-muted small fw-bold text-uppercase border-0">Region</th>
+                        <th class="py-3 text-muted small fw-bold text-uppercase border-0 text-center">Clearance</th>
+                        <th class="py-3 text-muted small fw-bold text-uppercase border-0">Total Spent</th>
+                        <th class="px-4 py-3 text-muted small fw-bold text-uppercase border-0 text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for client in clients %}
+                        <tr>
+                            <td class="px-4 py-3">
+                                <div class="d-flex align-items-center">
+                                    <div class="bg-red-light text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 32px; height: 32px;">
+                                        <i class="mdi mdi-account"></i>
+                                    </div>
+                                    <span class="fw-bold">{{ client.name }}</span>
+                                </div>
+                            </td>
+                            <td class="py-3">
+                                <span class="badge bg-light text-dark border">{{ client.region }}</span>
+                            </td>
+                            <td class="py-3 text-center">
+                                <div class="d-flex justify-content-center">
+                                    {% for i in "12345" %}
+                                        <i class="mdi mdi-shield {% if forloop.counter <= client.clearance_level %}text-red{% else %}text-muted opacity-25{% endif %}"></i>
+                                    {% endfor %}
+                                </div>
+                            </td>
+                            <td class="py-3">
+                                <span class="fw-bold text-red">${{ client.total_spent|floatformat:2 }}</span>
+                            </td>
+                            <td class="px-4 py-3 text-end">
+                                <a href="/admin/tasks/client/{{ client.id }}/change/" class="btn btn-sm btn-light border"><i class="mdi mdi-pencil"></i></a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% else %}
+    <div class="card border-0 shadow-sm">
+        <div class="card-body p-5 text-center">
+            <i class="mdi mdi-account-off fs-1 text-muted mb-3"></i>
+            <h4 class="fw-bold">No clients detected</h4>
+            <p class="text-muted">No regional contacts found in the database.</p>
+        </div>
+    </div>
+{% endif %}
+{% endblock %}
