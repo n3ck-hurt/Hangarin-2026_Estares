@@ -2,8 +2,11 @@ from django.shortcuts import render
 from django.views.generic import ListView, DetailView, TemplateView
 from django.db.models import Q, Sum, Count
 from django.utils import timezone
+from django.contrib.auth.decorators import login_not_required
+from django.utils.decorators import method_decorator
 from .models import ArmoryCategory, Supplier, Weapon, Client, Transaction, IntelligenceNote
 
+@method_decorator(login_not_required, name='dispatch')
 class HomeView(TemplateView):
     template_name = 'index.html'
 

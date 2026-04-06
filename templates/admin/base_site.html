@@ -1,0 +1,44 @@
+{% extends "admin/base.html" %}
+
+{% block title %}{{ title }} | ARSENAL Admin{% endblock %}
+
+{% block branding %}
+<h1 id="site-name">
+    <a href="{% url 'admin:index' %}" style="display: flex; align-items: center;">
+        <span style="color: #d32f2f; font-weight: 800; letter-spacing: 1px;">ARSENAL</span>
+        <span style="color: white; font-weight: 300; margin-left: 5px;">ARMORY PRO</span>
+    </a>
+</h1>
+{% endblock %}
+
+{% block extrastyle %}
+<style>
+    :root {
+        --primary: #d32f2f;
+        --secondary: #b71c1c;
+        --accent: #ff5252;
+        --dark: #000000;
+    }
+    #header {
+        background: var(--dark) !important;
+        border-bottom: 2px solid var(--primary);
+    }
+    .module h2, .module caption, .inline-group h2 {
+        background: var(--primary) !important;
+    }
+    div.breadcrumbs {
+        background: #1a1a1a !important;
+    }
+    a:link, a:visited {
+        color: var(--primary);
+    }
+    .button, input[type=submit], input[type=button], .submit-row input, a.button {
+        background: var(--primary) !important;
+    }
+    .button:hover, input[type=submit]:hover, input[type=button]:hover, .submit-row input:hover, a.button:hover {
+        background: var(--secondary) !important;
+    }
+</style>
+{% endblock %}
+
+{% block nav-global %}{% endblock %}
